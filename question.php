@@ -1,12 +1,5 @@
 <?php
-    require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
-
-    // Variable für den Index der aktuellen Frage vorbereiten
-    // $lastQuestionIndex wird im data-collector.php vorbereitet.
-    $currentQuestionIndex = $lastQuestionIndex + 1;
-
-    // Variablen für die hidden-Felder vorbereiten (lastPageID, quiz-last-question-index)
-    $currentPageID = "question-" . $currentQuestionIndex;
+    require "./includes/data-collector.php"; // Muss ganz am Anfang der Hauptseite sein, enthält start_session().
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -30,10 +23,10 @@
     <div class="row">
         <div class="col-sm-8">
             <!-- Fragestellung -->
-            <h7>Question 1</h7>
-            <h3>How many legs has a spider?</h3>
+            <h7>Frage <?php echo ($currentQuestionIndex + 1); ?> von <?php echo $quiz["questionNum"]; ?></h7>
+            <h3>Wieviele Beine hat eine Spinne?</h3>
 
-            <form action="question.php" method="post" onsubmit="return validateAnswerSelection();">
+            <form id="quiz-form" action="question.php" method="post" onsubmit="return navigate('next');">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="answer" id="answer-0" value="0">
                     <label class="form-check-label" for="single-choice-0">6</label>
@@ -43,14 +36,20 @@
                     <label class="form-check-label" for="single-choice-1">8</label>
                 </div>
 
-                <!-- hidden: lastPageID -->
-                <input type="hidden" name="lastPageID" value="<?php echo $currentPageID; ?>">
-                <input type="hidden" name="lastQuestionIndex" value="<?php echo $currentQuestionIndex; ?>">
+                <!-- 
+                    input type="hidden"
+                        questionNum, lastQuestionIndex: mit PHP gesetzt
+                        indexStep: mit JavaScript setIntValue(fieldId, value) verändert
+                -->
+                <input type="hidden" id="questionNum" value="<?php echo $quiz["questionNum"]; ?>">
+                <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="<?php echo $currentQuestionIndex; ?>">
+                <input type="hidden" id="indexStep" name="indexStep" value="1">
 
                 <!-- Validierungswarnung -->
                 <p id="validation-warning" class="warning"></p>
 
                 <!-- submit -->
+                <button type="submit" class="btn btn-primary" onclick="navigatePrevious();">Previous</button>
                 <button type="submit" class="btn btn-primary">Next</button>
                 <p class="spacer"></p>
             </form>

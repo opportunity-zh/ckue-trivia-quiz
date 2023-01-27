@@ -1,8 +1,5 @@
 <?php
     require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
-
-    // Startseite: Lösche $_SESSION Daten
-    session_destroy();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -41,7 +38,7 @@
 
     <!-- FORMULAR "Themenwahl" -->
     <div style="padding: 20px;">
-        <form action="question.php" method="post" onsubmit="return validateStartParameter();">
+        <form id="quiz-form" action="question.php" method="post" onsubmit="return navigate('next');">
             <!-- Themenwahl -->
             <label for="quiz-topic" class="form-label">Quiz Thema - bitte auswählen!</label>
             <select style="width:400px" class="form-select" aria-label="Default select example" id="topic" name="topic">
@@ -54,9 +51,13 @@
             <label style="margin-top:20px;" for="questionNum" class="form-label">Number of Questions</label>
             <input style="width:100px" type="number" class="form-control" id="questionNum" name="questionNum" min="5" max="40" value="10">
 
-            <!-- hidden: lastPageID -->
-            <input type="hidden" name="lastPageID" value="index">
-            <input type="hidden" name="lastQuestionIndex" value="-1">
+            <!-- 
+                input type="hidden"
+                    lastQuestionIndex: mit PHP gesetzt
+                    indexStep: mit JavaScript setIntValue(fieldId, value) verändert
+            -->
+            <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="-1">
+            <input type="hidden" id="indexStep" name="indexStep" value="1">
 
             <!-- Validierungswarnung -->
             <p id="validation-warning" class="warning"></p>
