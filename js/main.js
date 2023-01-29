@@ -52,7 +52,7 @@ function navigate(direction) {
 
             Die einzige erlaubte Navigation: Neues Quiz starten ab index.php.
         */
-        document.location = "index.php";
+        document.location = "/index.php";
         return true;
     }
     else {

@@ -9,6 +9,10 @@ session_start();
 // Hilfswerkzeuge laden
 include 'tools.php';
 
+// Falls verfügbar, hole die Quiz-Daten aus der Session.
+if (isset($_SESSION["quiz"])) $quiz = $_SESSION["quiz"];
+else $quiz = null;
+
 /*
     Hole die Indexnummer der letzten Frage aus $_POST "lastQuestionIndex".
     $lastQuestionIndex wird für question.php und report.php verwendet, jedoch
@@ -27,18 +31,17 @@ else {
 $scriptName = $_SERVER['SCRIPT_NAME']; // https://www.php.net/manual/en/reserved.variables.server.php
 echo "scriptName = " . $scriptName . "<br>";
 
+// index.php (Startseite) ----------------------------------------------------------------
 if (str_contains($scriptName, 'index')) { // https://www.php.net/manual/en/function.str-contains.php
-    // index.php (Startseite) ----------------------------------------------------------------
-
-    // Lösche die Daten in der $_SESSION.
+    // Lösche die Daten, inklusive bestehende Quiz-Daten in der $_SESSION.
     session_unset();
 
-    // Setze das Quiz explizit in $_SESSION zurück.
-    $_SESSION["quiz"] = null;
+    // Setze explizit auch $quiz zurück (Konsistenz gegenüber Session).
+    $quiz = null;
 }
-else if (str_contains($scriptName, 'question')) {
-    // question.php (Frageseite) -------------------------------------------------------------
 
+// question.php (Frageseite) -------------------------------------------------------------
+else if (str_contains($scriptName, 'question')) {
     if ($lastQuestionIndex === -1) { // -1 bedeutet, dass das Quiz noch nicht gestartet wurde.
         // Starte ein neues Quiz ...
         $quiz = array(
@@ -48,22 +51,24 @@ else if (str_contains($scriptName, 'question')) {
             "currentQuestionIndex" => -1,
             "questionIdSequence" => array()
         );
-    
-        // ... und speichere die Quiz-Daten als "quiz" in $_SESSION.
-        $_SESSION["quiz"] = $quiz;
-    }
-    else {
-        $quiz = $_SESSION["quiz"];
     }
 
     /*
-        Variable für den index-Schritt setzen.
+        Variable für den index-Schritt. Die Richtung dieses "indexStep"
+        kann die folgenden Werte einnehmen:
 
         -1 bedeutet "vorangehender Frage-Index".
+         0 bedeutet "bei der aktuellen Frage bleiben".
          1 bedeutet "nächster Frage-Index".
 
-         Wichtig: "Frage-Index" steht für den Index im "questionIdSequence"-Array,
-                  NICHT für die "id" der Frage in der Tabelle.
+        Der "indexStep" wird durch JavaScript in main.js per
+        setElementValue("indexStep", indexStep) in das Hidden Field
+        mit dem gleichen Namen gesetzt. PHP holt dann diesen Wert im
+        $_POST ab.
+
+        Hinweis: "Frage-Index" steht hier für den Index im 
+                 "questionIdSequence"-Array, NICHT für die 
+                 "id" der Frage in der Tabelle.
     */
     $indexStep = 1;
 
@@ -74,37 +79,47 @@ else if (str_contains($scriptName, 'question')) {
 
     // Index der aktuellen Frage, sowie für das Quiz setzen.
     $currentQuestionIndex = $lastQuestionIndex + $indexStep;
-    $quiz["currentQuestionIndex"] = $currentQuestionIndex;
 
-    // Anhand des $currentQuestionIndex entscheiden, wie's weitergeht.
-    if ($currentQuestionIndex < 0) {
-        // Navigation von der 1. Frage zur Startseite: zur Startseite springen.
-    }
-    else if ($currentQuestionIndex < $quiz["questionNum"]) {
-        // Fragestellung anzeigen 
-    }
-    else { // $currentQuestionIndex >= $quiz["questionNum"]
-        // Zur Auswertungsseite springen
-    }
+    /*
+        JavaScript entscheidet beim Klicken auf die "previous" oder "next"
+        Buttons, welche Zielseite angesprungen wird. 
 
-    // Speichere alle Daten der letzten Frage in der Session.
-    if ($lastQuestionIndex >= 0) {
-        $questionName = "question-" . $lastQuestionIndex;
-        $_SESSION[$questionName] = $_POST;
-    }
+        Siehe main.js, function navigate(direction)
+        
+        PHP führt keine Checks und Redirects durch. Grund: Die Redirects 
+        sind knifflig mit Header-Manipulationen umzusetzen (aufpassen darauf, 
+        wann session_start() ausgelöst wird).
+
+        if ($currentQuestionIndex < 0) {
+            // Navigation von der 1. Frage zur Startseite: Redirect zur Startseite
+        }
+        else if ($currentQuestionIndex < $quiz["questionNum"]) {
+            // Fragestellung anzeigen 
+        }
+        else { // $currentQuestionIndex >= $quiz["questionNum"]
+            // Redirect zur Auswertungsseite
+        }
+    */
 }
+
+// report.php (Auswertungsseite) ---------------------------------------------------------
 else if (str_contains($scriptName, 'report')) {
-    // report.php (Auswertungsseite) ---------------------------------------------------------
-
-    // Speichere alle Daten der letzten Frage in der Session.
-    if ($lastQuestionIndex >= 0) {
-        $questionName = "question-" . $lastQuestionIndex;
-        $_SESSION[$questionName] = $_POST;
-    }
-
+    // Keine weitere Aufbereitung der Daten
 }
 else {
     // Unbekannte URL
+}
+
+// Speichere Quizparameter und Post-Daten der letzten Frage in der Session.
+if (isset($quiz)) { // Achtung: $quiz ist nicht immer verfügbar.
+    $_SESSION["quiz"] = $quiz;
+    $_SESSION["quiz"]["lastQuestionIndex"] = $lastQuestionIndex;
+    $_SESSION["quiz"]["currentQuestionIndex"] = $currentQuestionIndex;
+}
+
+if ($lastQuestionIndex >= 0) { // Achtung: Nur für gültige Fragenindexe speichern.
+    $questionName = "question-" . $lastQuestionIndex;
+    $_SESSION[$questionName] = $_POST;
 }
 
 // DEVONLY: Gib die aktuelle $_SESSION in die Seite aus.
