@@ -1,12 +1,5 @@
 <?php
     require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
-
-    // Variable für den Index der aktuellen Frage vorbereiten
-    // $lastQuestionIndex wird im data-collector.php vorbereitet.
-    $currentQuestionIndex = $lastQuestionIndex + 1;
-
-    // Variablen für die hidden-Felder vorbereiten (lastPageID, quiz-last-question-index)
-    $currentPageID = "question-" . $currentQuestionIndex;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,16 +15,34 @@
 </head>
 <body>
     <?php
-        require "./includes/db.php";
+        /*
+            Bestimme die Anzahl der erreichten Punkte. Dazu wird das
+            'value'-Attribut des Feldes 'single-choice' ausgewertet.
 
-    ?>  
+            Wichtig: Sämtliche $_SESSION-Werte müssen fertig gesetzt sein,
+                     bevor die Punktzahlen gesammelt werden dürfen.
+        */
+        $totalPoints = 0;
 
-    <!-- FORMULAR "Fragestellung" -->
+        foreach ($_SESSION as $name => $value) {
+            if (str_contains($name, 'question-')) {
+                if (isset($value["single-choice"])) {
+                    $points = intval($value["single-choice"]);
+                    $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
+                }
+            }
+        }
+
+        // Maximal mögliche Punkte
+        $maxPoints = $_SESSION["quiz"]["questionNum"];
+    ?>
+
     <div class="row">
         <div class="col-sm-8">
-            <!-- Fragestellung -->
+            <!-- Bilanz -->
             <h7>Congratulations!</h7>
-            <h3>You achieved x out of possible y points.</h3>
+            <h3>You achieved <?php echo $totalPoints; ?> out of 
+                    possible <?php echo $maxPoints; ?> points.</h3>
 
         </div>
 

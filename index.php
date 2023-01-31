@@ -14,28 +14,6 @@
     <script src="js/main.js"></script>
 </head>
 <body>
-    <?php
-        require "./includes/db.php";
-
-        // Teste die Verbindung zur Datenbank
-        $sqlStatement = $dbConnection->query("SELECT * FROM `questions`");
-
-        // Durch den Array hindurch die Angaben zu einem Buch in eine Tabellenzelle ausgeben.
-        echo "<table>";
-
-        while ( $row = $sqlStatement->fetch(PDO::FETCH_ASSOC) ) {
-            echo "<tr>";
-
-            foreach ($row as $columnName => $value) {
-                echo "<td>$value</td>";
-            }
-
-            echo "</tr>";
-        }
-
-        echo "</table>";
-    ?>  
-
     <!-- FORMULAR "Themenwahl" -->
     <div style="padding: 20px;">
         <form id="quiz-form" action="question.php" method="post" onsubmit="return navigate('next');">
@@ -49,7 +27,9 @@
 
             <!-- Anzahl Fragen -->
             <label style="margin-top:20px;" for="questionNum" class="form-label">Number of Questions</label>
-            <input style="width:100px" type="number" class="form-control" id="questionNum" name="questionNum" min="5" max="40" value="10">
+            <input style="width:100px" type="number" class="form-control" 
+                   id="questionNum" name="questionNum" 
+                   min="5" max="40" value="10">
 
             <!-- 
                 input type="hidden"

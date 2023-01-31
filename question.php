@@ -15,26 +15,55 @@
 </head>
 <body>
     <?php
-        require "./includes/db.php";
+        // Bestimme die Anzahl der verfügbaren Fragen
+        if (isset($quiz["questionIdSequence"])) {
+            $questionCount = count($quiz["questionIdSequence"]);
+            $id = $quiz["questionIdSequence"][$currentQuestionIndex];
+        } 
+        else {
+            $questionCount = 0;
+        }
 
-    ?>  
+        // Hole alle Datenfelder zur Frage mit $id von der Datenbank
+        $question = fetchQuestionById($id, $dbConnection);
+    ?>
 
     <!-- FORMULAR "Fragestellung" -->
     <div class="row">
         <div class="col-sm-8">
             <!-- Fragestellung -->
             <h7>Frage <?php echo ($currentQuestionIndex + 1); ?> von <?php echo $quiz["questionNum"]; ?></h7>
-            <h3>Wieviele Beine hat eine Spinne?</h3>
+            <h3><?php echo $question["question_text"]; ?></h3>
 
             <form id="quiz-form" action="question.php" method="post" onsubmit="return navigate('next');">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="answer" id="answer-0" value="0">
-                    <label class="form-check-label" for="single-choice-0">6</label>
-                </div>
-                <div class="form-check">
-                <input class="form-check-input" type="radio" name="answer" id="answer-1" value="1">
-                    <label class="form-check-label" for="single-choice-1">8</label>
-                </div>
+                <?php 
+                    // Generiere Antwort-Radio-Buttons mit Beschriftung
+
+                    // Single Choice: Hole den Namen der richtigen Antwortspalte in $correct, aus $question["correct"]
+                    $correct = $question["correct"];
+
+                    for ($a = 1; $a <= 5; $a++) {
+                        // Setze für $answerColumnName den Namen der Tabellenspalte "answer-N" zusammen
+                        $answerColumnName = "answer-" . $a;
+
+                        // Falls es überhaupt Antworttext in $question[$answerColumnName] gibt
+                        // und der Antwortext nicht gleich '', dann ...
+                        if (isset($question[$answerColumnName]) && $question[$answerColumnName] !== '') {
+                            // ... hole den Antworttext aus $question.
+                            $answerText = $question[$answerColumnName];
+
+                            // Entscheide für $value, wieviele Punkte die Anwort ergibt: 
+                            // richtig -> 1 Punkt, falsch -> 0 Punkte
+                            if ($correct === $answerColumnName) $value = 1;
+                            else $value = 0;
+
+                            echo "<div class='form-check'>
+                                    <input class='form-check-input' type='radio' name='single-choice' id='$answerColumnName' value='$value'>
+                                    <label class='form-check-label' for='single-choice-0'>$answerText</label>
+                                  </div>";
+                        }
+                    }
+                ?>
 
                 <!-- 
                     input type="hidden"
@@ -42,14 +71,14 @@
                         indexStep: mit JavaScript setIntValue(fieldId, value) verändert
                 -->
                 <input type="hidden" id="questionNum" value="<?php echo $quiz["questionNum"]; ?>">
-                <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="<?php echo $currentQuestionIndex; ?>">
+                <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="<?php echo $currentQuestionIndex; ?> ">
                 <input type="hidden" id="indexStep" name="indexStep" value="1">
 
                 <!-- Validierungswarnung -->
                 <p id="validation-warning" class="warning"></p>
 
                 <!-- submit -->
-                <button type="submit" class="btn btn-primary" onclick="navigatePrevious();">Previous</button>
+                <!-- button type="submit" class="btn btn-primary" onclick="navigatePrevious();">Previous</button -->
                 <button type="submit" class="btn btn-primary">Next</button>
                 <p class="spacer"></p>
             </form>

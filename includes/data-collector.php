@@ -8,6 +8,7 @@ session_start();
 
 // Hilfswerkzeuge laden
 include 'tools.php';
+include 'db.php';
 
 // Falls verfügbar, hole die Quiz-Daten aus der Session.
 if (isset($_SESSION["quiz"])) $quiz = $_SESSION["quiz"];
@@ -29,7 +30,6 @@ else {
 
 // Abhängig von der aktuellen Hauptseite: Bereite die benötigten Seitendaten vor.
 $scriptName = $_SERVER['SCRIPT_NAME']; // https://www.php.net/manual/en/reserved.variables.server.php
-echo "scriptName = " . $scriptName . "<br>";
 
 // index.php (Startseite) ----------------------------------------------------------------
 if (str_contains($scriptName, 'index')) { // https://www.php.net/manual/en/function.str-contains.php
@@ -39,17 +39,28 @@ if (str_contains($scriptName, 'index')) { // https://www.php.net/manual/en/funct
     // Setze explizit auch $quiz zurück (Konsistenz gegenüber Session).
     $quiz = null;
 }
-
 // question.php (Frageseite) -------------------------------------------------------------
 else if (str_contains($scriptName, 'question')) {
     if ($lastQuestionIndex === -1) { // -1 bedeutet, dass das Quiz noch nicht gestartet wurde.
         // Starte ein neues Quiz ...
+        $questionNum = intval($_POST["questionNum"]);
+
+        $questionIdSequence = fetchQuestionIdSequence(
+            $_POST["topic"], 
+            $questionNum, 
+            true, // Auswahl in zufälliger Reihenfolge ($random ist true oder false)
+            $dbConnection
+        );
+
+        // Berechne die wirklich mögliche Anzahl von Fragen
+        $questionNum = min(count($questionIdSequence), $questionNum);
+        
         $quiz = array(
             "topic" => $_POST["topic"], 
-            "questionNum" => $_POST["questionNum"],
+            "questionNum" => $questionNum,
             "lastQuestionIndex" => $lastQuestionIndex,
             "currentQuestionIndex" => -1,
-            "questionIdSequence" => array()
+            "questionIdSequence" => $questionIdSequence
         );
     }
 
@@ -101,17 +112,17 @@ else if (str_contains($scriptName, 'question')) {
         }
     */
 }
-
 // report.php (Auswertungsseite) ---------------------------------------------------------
 else if (str_contains($scriptName, 'report')) {
-    // Keine weitere Aufbereitung der Daten
+    // Die Reportseite ist ausserhalb der Fragesequenz.
+    $currentQuestionIndex = -1;
 }
 else {
     // Unbekannte URL
 }
 
 // Speichere Quizparameter und Post-Daten der letzten Frage in der Session.
-if (isset($quiz)) { // Achtung: $quiz ist nicht immer verfügbar.
+if (isset($quiz) && $currentQuestionIndex >= 0) {
     $_SESSION["quiz"] = $quiz;
     $_SESSION["quiz"]["lastQuestionIndex"] = $lastQuestionIndex;
     $_SESSION["quiz"]["currentQuestionIndex"] = $currentQuestionIndex;
@@ -124,7 +135,6 @@ if ($lastQuestionIndex >= 0) { // Achtung: Nur für gültige Fragenindexe speich
 
 // DEVONLY: Gib die aktuelle $_SESSION in die Seite aus.
 prettyPrint($_SESSION, '$_SESSION = ');
-
 ?>
 
 
