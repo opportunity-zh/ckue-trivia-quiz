@@ -17,12 +17,8 @@
     <?php
         // Bestimme die Anzahl der verfügbaren Fragen
         if (isset($quiz["questionIdSequence"])) {
-            $questionCount = count($quiz["questionIdSequence"]);
             $id = $quiz["questionIdSequence"][$currentQuestionIndex];
         } 
-        else {
-            $questionCount = 0;
-        }
 
         // Hole alle Datenfelder zur Frage mit $id von der Datenbank
         $question = fetchQuestionById($id, $dbConnection);

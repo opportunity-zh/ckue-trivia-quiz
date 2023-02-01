@@ -48,7 +48,6 @@ else if (str_contains($scriptName, 'question')) {
         $questionIdSequence = fetchQuestionIdSequence(
             $_POST["topic"], 
             $questionNum, 
-            true, // Auswahl in zufälliger Reihenfolge ($random ist true oder false)
             $dbConnection
         );
 

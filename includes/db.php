@@ -25,7 +25,7 @@ function fetchQuestionById($id, $dbConnection) {
     return $row; 
 }
 
-function fetchQuestionIdSequence($topic, $questionNum, $random, $dbConnection) {
+function fetchQuestionIdSequence($topic, $questionNum, $dbConnection) {
     // SELECT * FROM TableName ORDER BY RAND() LIMIT N;
     $query = "SELECT `id` FROM `questions` WHERE `topic`= '$topic' ORDER BY RAND() LIMIT $questionNum";
     $sqlStatement = $dbConnection->query($query);
