@@ -26,7 +26,8 @@
 
         foreach ($_SESSION as $name => $value) {
             if (str_contains($name, 'question-')) {
-                if (isset($value["single-choice"])) {
+                // Falls keine Antwort gewählt wurde fehlt "single-choice" im $_POST.
+                if (isset($value["single-choice"])) { 
                     $points = intval($value["single-choice"]);
                     $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
                 }
@@ -37,16 +38,18 @@
         $maxPoints = $_SESSION["quiz"]["questionNum"];
     ?>
 
-    <div class="row">
+    <div class="row" style="padding: 20px;">
         <div class="col-sm-8">
             <!-- Bilanz -->
             <h7>Congratulations!</h7>
+            <p>&nbsp;</p>
             <h3>You achieved <?php echo $totalPoints; ?> out of 
                     possible <?php echo $maxPoints; ?> points.</h3>
 
         </div>
-
-        <button class="btn btn-primary" onclick="document.location='/index.php';">Neues Quiz</button>
+        <p>&nbsp;</p>
+        <button class="btn btn-primary" onclick="document.location='/index.php';"
+                style="position:fixed;bottom:150px;">Neues Quiz</button>
     </div>
 
 </body>

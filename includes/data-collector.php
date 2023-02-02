@@ -110,6 +110,14 @@ else if (str_contains($scriptName, 'question')) {
             // Redirect zur Auswertungsseite
         }
     */
+    if ($currentQuestionIndex + 1 < $quiz["questionNum"]) {
+        // Fragestellung anzeigen 
+        $actionUrl = "question.php";
+    }
+    else { // $currentQuestionIndex >= $quiz["questionNum"]
+        // Redirect zur Auswertungsseite
+        $actionUrl = "report.php";
+    }
 }
 // report.php (Auswertungsseite) ---------------------------------------------------------
 else if (str_contains($scriptName, 'report')) {
@@ -133,7 +141,7 @@ if ($lastQuestionIndex >= 0) { // Achtung: Nur für gültige Fragenindexe speich
 }
 
 // DEVONLY: Gib die aktuelle $_SESSION in die Seite aus.
-prettyPrint($_SESSION, '$_SESSION = ');
+// prettyPrint($_SESSION, '$_SESSION = ');
 ?>
 
 

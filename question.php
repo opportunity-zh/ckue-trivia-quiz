@@ -25,13 +25,15 @@
     ?>
 
     <!-- FORMULAR "Fragestellung" -->
-    <div class="row">
+    <div class="row" style="padding: 20px;">
         <div class="col-sm-8">
             <!-- Fragestellung -->
             <h7>Frage <?php echo ($currentQuestionIndex + 1); ?> von <?php echo $quiz["questionNum"]; ?></h7>
+            <p>&nbsp;</p>
             <h3><?php echo $question["question_text"]; ?></h3>
+            <p>&nbsp;</p>
 
-            <form id="quiz-form" action="question.php" method="post" onsubmit="return navigate('next');">
+            <form id="quiz-form" action="<?php echo $actionUrl; ?>" method="post" onsubmit="return navigate('next');">
                 <?php 
                     // Generiere Antwort-Radio-Buttons mit Beschriftung
 
@@ -55,7 +57,7 @@
 
                             echo "<div class='form-check'>
                                     <input class='form-check-input' type='radio' name='single-choice' id='$answerColumnName' value='$value'>
-                                    <label class='form-check-label' for='single-choice-0'>$answerText</label>
+                                    <label class='form-check-label' for='$answerColumnName'>$answerText</label>
                                   </div>";
                         }
                     }
@@ -75,7 +77,8 @@
 
                 <!-- submit -->
                 <!-- button type="submit" class="btn btn-primary" onclick="navigatePrevious();">Previous</button -->
-                <button type="submit" class="btn btn-primary">Next</button>
+                <button type="submit" class="btn btn-primary" 
+                        style="position:fixed;bottom:150px;">Next</button>
                 <p class="spacer"></p>
             </form>
         </div>
