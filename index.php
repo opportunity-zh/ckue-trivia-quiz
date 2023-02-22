@@ -56,7 +56,24 @@
             <!-- submit -->
             <input style="margin-top:20px;" type="submit" value="Start">
         </form>
+
+        <p>&nbsp;<p>
+        <button type="button" class="btn btn-primary"
+                onclick="alert('Hellooooooooo');">Say Hello</button>
+
+        <button type="button" class="btn btn-primary"
+                id="greeting-button">Sag Hallo!</button>
+
+        <script>
+            let btn = document.getElementById("greeting-button");
+
+            btn.addEventListener("click", function(event) {
+                alert("OK denn - ich sag HALLOOO!");
+            });
+
+        </script>
     </div>
+
 
 </body>
 </html>
