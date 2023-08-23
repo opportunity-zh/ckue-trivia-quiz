@@ -1,5 +1,7 @@
 <?php
-    require "./includes/data-collector.php"; // Muss ganz am Anfang der Hauptseite sein, enthält start_session().
+    /* Muss ganz am Anfang der Hauptseite sein, 
+        enthält start_session(). */
+    require "./includes/data-collector.php"; 
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +17,44 @@
 </head>
 <body>
     <?php
+        // END NEW -------------------------------------------------
+
+        /*
+            Hole die Liste (array) von Frage-id-Nummern für das ganze Quiz.
+            Mögliches Resultat: [3, 5, 1, 17, 29, 7, 11, 119]
+
+            Vorbereitung:
+            a) Hole aus $_POST den Wert für $topic
+            b) Hole aus $_POST den Wert für $questionNum
+            c) definiere fetchQuestionIdSequence() in db.php
+
+            Test:
+            d) zeige mit prettyPrint() den Wert von $questionIdSequence
+        */
+        if (isset($_POST["topic"])) $topic = $_POST["topic"];
+        else $topic = 'music';
+
+        if (isset($_POST["questionNum"])) $questionNum = $_POST["questionNum"];
+        else $questionNum = 5;
+
+        $questionIdSequence = fetchQuestionIdSequence($topic, $questionNum, $dbConnection);
+        prettyPrint($questionIdSequence, "Question ID Sequence");
+        // END NEW -------------------------------------------------
+
+        // Hole die Daten für die aktuelle Frage aus der Datenbank.
+        $questionId = 1;
+        $question = fetchQuestionById($questionId, $dbConnection);
+
+        prettyPrint($question, "Question");
+        exit("see you later ...");
+
+
+
+
+
+
+
+
         // Bestimme die Anzahl der verfügbaren Fragen
         if (isset($quiz["questionIdSequence"])) {
             $id = $quiz["questionIdSequence"][$currentQuestionIndex];
@@ -29,7 +69,7 @@
         <div class="col-sm-8">
             <!-- Fragestellung -->
             <h7>Frage <?php echo ($currentQuestionIndex + 1); ?> von <?php echo $quiz["questionNum"]; ?></h7>
-            <p>&nbsp;</p>
+            <!--p>&nbsp;</p-->
             <h3><?php echo $question["question_text"]; ?></h3>
             <p>&nbsp;</p>
 
@@ -74,12 +114,9 @@
 
                 <!-- Validierungswarnung -->
                 <p id="validation-warning" class="warning"></p>
-
-                <!-- submit -->
+                <p>&nbsp;</p>
                 <!-- button type="submit" class="btn btn-primary" onclick="navigatePrevious();">Previous</button -->
-                <button type="submit" class="btn btn-primary" 
-                        style="position:fixed;bottom:150px;">Next</button>
-                <p class="spacer"></p>
+                <input type="submit" class="btn btn-primary" value="Next">
             </form>
         </div>
     </div>

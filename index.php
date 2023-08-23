@@ -58,11 +58,14 @@
         </form>
 
         <p>&nbsp;<p>
+
+        <!-- 
         <button type="button" class="btn btn-primary"
                 onclick="alert('Hellooooooooo');">Say Hello</button>
 
         <button type="button" class="btn btn-primary"
                 id="greeting-button">Sag Hallo!</button>
+        -->
 
         <script>
             let btn = document.getElementById("greeting-button");
