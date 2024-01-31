@@ -1,5 +1,5 @@
 <?php
-    require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
+    // require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,20 +20,16 @@
             <!-- Themenwahl -->
             <label for="quiz-topic" class="form-label">Quiz Thema - bitte auswählen!</label>
             <select style="width:400px" class="form-select" aria-label="Default select example" id="topic" name="topic">
-                <option value="music">Music</option>
-                <option value="ch-norris">Chuck Norris</option>
+                <option value="cinema">Cinema</option>
+                <option value="tech">Technology</option>
+                <option value="tierwelt">Tierwelt</option>
                 <option value="animals">Animals</option>
-                <option value="movies">Movies</option>
-                <option value="d-n-d">Dungeons-n-Dragons</option>
-                <option value="astronautics">Astronautics</option>
-                <!-- option value="technology">Technology</option -->
-                <!-- option value="ai">Artificial Intelligence</option -->
+                <option value="ch-norris">Chuck Norris</option>
+                <option value="tiere">Tiere</option>
                 <option value="geography">Geography</option>
-                <!-- option value="sports">Sports</option-->
-                <option value="science">Science</option>
-                <option value="informatics">Informatics</option>
-                <option value="gen-knowledge">General Knowledge</option>
-                <option value="basketball">Basketball</option>
+                <option value="astronomy">Astronomie</option>
+                <option value="history">History</option>
+                <option value="werkzeuge">Werkzeuge</option>
             </select>
 
             <!-- Anzahl Fragen -->
@@ -42,12 +38,9 @@
                    id="questionNum" name="questionNum" 
                    min="5" max="40" value="10">
 
-            <!-- 
-                input type="hidden"
-                    lastQuestionIndex: mit PHP gesetzt
-                    indexStep: mit JavaScript setIntValue(fieldId, value) verändert
-            -->
+            <!-- lastQuestionIndex: mit PHP gesetzt -->
             <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="-1">
+            <!-- indexStep: mit JavaScript setIntValue(fieldId, value) verändert -->
             <input type="hidden" id="indexStep" name="indexStep" value="1">
 
             <!-- Validierungswarnung -->

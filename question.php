@@ -42,7 +42,7 @@
 
                     for ($a = 1; $a <= 5; $a++) {
                         // Setze für $answerColumnName den Namen der Tabellenspalte "answer-N" zusammen
-                        $answerColumnName = "answer-" . $a;
+                        $answerColumnName = "answer_" . $a;
 
                         // Falls es überhaupt Antworttext in $question[$answerColumnName] gibt
                         // und der Antwortext nicht gleich '', dann ...

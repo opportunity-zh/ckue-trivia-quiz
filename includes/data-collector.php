@@ -7,8 +7,8 @@
 session_start();
 
 // Hilfswerkzeuge laden
-include 'tools.php';
-include 'db.php';
+include 'tools.php'; // prettyPrint() laden
+include 'db.php';    // Datenbank-Verbindung $dbConnection aufbauen
 
 // Falls verfügbar, hole die Quiz-Daten aus der Session.
 if (isset($_SESSION["quiz"])) $quiz = $_SESSION["quiz"];
@@ -27,6 +27,44 @@ else {
     // -1 soll bedeuten, dass das Quiz noch nicht gestartet wurde.
     $lastQuestionIndex = -1;
 }
+
+// Quiz-Daten vorbereiten
+if ($quiz === null) { // Falls noch keine $quiz Daten verfügbar sind ...
+    // Hole die Anzahl Fragen aus dem $_POST.
+    $questionNum = intval($_POST["questionNum"]);
+
+    // Hole die Sequenz der Frage 'id'-s aus der Datenbank.
+    $questionIdSequence = fetchQuestionIdSequence(
+        $_POST["topic"], 
+        $questionNum, 
+        $dbConnection
+    );
+
+    // Berechne die wirklich mögliche Anzahl von Fragen
+
+}
+
+prettyPrint($quiz, "\$quiz is");
+prettyPrint($questionIdSequence, "\$questionIdSequence is");
+echo "<p>\$lastQuestionIndex is $lastQuestionIndex</p>";
+echo "<p>\$questionNum is $questionNum</p>";
+exit("OK");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Abhängig von der aktuellen Hauptseite: Bereite die benötigten Seitendaten vor.
 $scriptName = $_SERVER['SCRIPT_NAME']; // https://www.php.net/manual/en/reserved.variables.server.php
