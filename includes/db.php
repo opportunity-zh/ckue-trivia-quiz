@@ -29,25 +29,15 @@ function fetchQuestionIdSequence($topic, $questionNum, $dbConnection) {
     return $rows;
 }
 
-
-
-
-
-
-
-
-
-
-
 function fetchQuestionById($id, $dbConnection) {
     $sqlStatement = $dbConnection->query("SELECT * FROM `questions` WHERE `id` = $id");
     $row = $sqlStatement->fetch(PDO::FETCH_ASSOC);
 
-    print_r($row);
+    // print_r($row);
 
     /*
         Gibt Zeilendaten als assoziativer Array zu genau einer Frage zurück.
-        Beispiel: $row = array('id' => 9999, 'topic' => geography, ...)
+        Beispiel: $row = array('id' => 9999, 'topic' => 'geography', ...)
     */
     return $row; 
 }

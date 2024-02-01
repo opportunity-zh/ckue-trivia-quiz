@@ -1,5 +1,5 @@
 <?php
-    require "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
+    include "./includes/data-collector.php"; // Muss zuerst sein wegen start_session()
 ?>
 <!DOCTYPE html>
 <html lang="en">
