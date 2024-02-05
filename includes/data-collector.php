@@ -95,7 +95,7 @@ else if (str_contains($scriptName, 'question')) {
 }
 // report.php (Auswertungsseite) -------------------------------------------------------------
 else if (str_contains($scriptName, 'report')) {
-
+    
 }
 
 

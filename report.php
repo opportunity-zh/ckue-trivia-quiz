@@ -23,19 +23,32 @@
                      bevor die Punktzahlen gesammelt werden dürfen.
         */
         $totalPoints = 0;
+        $maxTotalPoints = 0;
 
-        foreach ($_SESSION as $name => $value) {
-            if (str_contains($name, 'question-')) {
-                // Falls keine Antwort gewählt wurde fehlt "single-choice" im $_POST.
-                if (isset($value["single-choice"])) { 
-                    $points = intval($value["single-choice"]);
-                    $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
+        foreach ($_SESSION as $questionKey => $data) {
+            if (str_contains($questionKey, 'question-')) {
+                if ($data["multipleChoice"] === 'true') { 
+                    // Multiple Choice: checkboxes
+                    foreach ($data as $key => $value) {
+                        if (str_contains($key, 'answer_')) {
+                            $points = intval($value);
+                            $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
+                        }
+                    }
                 }
+                else if ($data["multipleChoice"] === 'false') { 
+                    // Single Choice: radio buttons
+
+                    // Falls keine Antwort gewählt wurde fehlt "single-choice" im $_POST.
+                    if (isset($data["single-choice"])) { 
+                        $points = intval($data["single-choice"]);
+                        $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
+                    }
+                }
+
+                $maxTotalPoints = $maxTotalPoints + intval($data["maxPoints"]); // Kurzform: $maxTotalPoints += intval($data["maxPoints"]);
             }
         }
-
-        // Maximal mögliche Punkte
-        $maxPoints = $_SESSION["quiz"]["questionNum"];
     ?>
 
     <div class="row" style="padding: 20px;">
@@ -44,7 +57,7 @@
             <h7>Congratulations!</h7>
             <p>&nbsp;</p>
             <h3>You achieved <?php echo $totalPoints; ?> out of 
-                    possible <?php echo $maxPoints; ?> points.</h3>
+                    possible <?php echo $maxTotalPoints; ?> points.</h3>
 
         </div>
         <p>&nbsp;</p>

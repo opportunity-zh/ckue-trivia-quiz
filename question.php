@@ -60,6 +60,9 @@
                         $correctItems[$i] = intval($item);
                     }
 
+                    // Berechne die maximal mögliche Punktzahl für diese Frage.
+                    $maxPoints = count($correctItems);
+
                     // Entscheide, ob wir single-choice (radio) oder multiple-choice (checkbox) Antworten benötigen.
                     if (count($correctItems) > 1) $multipleChoice = true;
                     else $multipleChoice = false; // Bedeutet Single Choice
@@ -105,6 +108,7 @@
                 <input type="hidden" id="questionNum" name="questionNum" value="<?php echo $quiz["questionNum"]; ?>">
                 <input type="hidden" id="lastQuestionIndex" name="lastQuestionIndex" value="<?php echo $currentQuestionIndex; ?>">
                 <input type="hidden" id="multipleChoice" name="multipleChoice" value="<?php echo $multipleChoice ? 'true':'false'; ?>">
+                <input type="hidden" id="maxPoints" name="maxPoints" value="<?php echo $maxPoints; ?>">
                 <input type="hidden" id="indexStep" name="indexStep" value="1">
 
                 <!-- Validierungswarnung -->
