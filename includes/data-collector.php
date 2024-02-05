@@ -3,6 +3,10 @@
     session_start() Muss vor dem Gebrauch von $_SESSION ausgeführt werden.
     Dazu muss das data-collector.php ganz am Anfang einer Hauptseite per 
     'include' oder 'require' referenziert werden.
+
+    CAUTION: Certain settings in nginx/conf.d/php.conf force the 'index' to
+             be the single point of entry. This may erase the content of the
+             $_SESSION because of a redirect over index.php with session_unset().
 */
 session_start();
 
@@ -22,6 +26,12 @@ else $quiz = null;
 if (isset($_POST["lastQuestionIndex"])) {
     // https://www.php.net/manual/en/function.intval.php
     $lastQuestionIndex = intval($_POST["lastQuestionIndex"]);
+
+    // Nur für gültige Fragenindexe: Post-Daten in $_SESSION speichern.
+    if ($lastQuestionIndex >= 0) {
+        $questionName = "question-" . $lastQuestionIndex;
+        $_SESSION[$questionName] = $_POST;
+    }
 }
 else {
     // -1 soll bedeuten, dass das Quiz noch nicht gestartet wurde.
@@ -85,11 +95,8 @@ else if (str_contains($scriptName, 'question')) {
 }
 // report.php (Auswertungsseite) -------------------------------------------------------------
 else if (str_contains($scriptName, 'report')) {
+
 }
-
-
-
-
 
 
 
