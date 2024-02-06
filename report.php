@@ -17,7 +17,7 @@
     <?php
         /*
             Bestimme die Anzahl der erreichten Punkte. Dazu wird das
-            'value'-Attribut des Feldes 'single-choice' ausgewertet.
+            'value'-Attribut der Eingabefelder ausgewertet.
 
             Wichtig: Sämtliche $_SESSION-Werte müssen fertig gesetzt sein,
                      bevor die Punktzahlen gesammelt werden dürfen.
@@ -44,17 +44,24 @@
                         $points = intval($data["single-choice"]);
                         $totalPoints = $totalPoints + $points; // Kurzform: $totalPoints += $points;
                     }
-                }
+                }  
 
                 $maxTotalPoints = $maxTotalPoints + intval($data["maxPoints"]); // Kurzform: $maxTotalPoints += intval($data["maxPoints"]);
             }
         }
+
+        // Bestimme das Feedback anhand von Prozent-Schwellenwerten.
+        $percent = $totalPoints / $maxTotalPoints; // 0 <= $percent <= 1
+
+        if ($percent > 0.8) $feedback = "Congratulations!";
+        else if ($percent > 0.4) $feedback = "Quite good!";
+        else $feedback = "Uuups!";
     ?>
 
     <div class="row" style="padding: 20px;">
         <div class="col-sm-8">
             <!-- Bilanz -->
-            <h7>Congratulations!</h7>
+            <h3><?php echo $feedback; ?></h3>
             <p>&nbsp;</p>
             <h3>You achieved <?php echo $totalPoints; ?> out of 
                     possible <?php echo $maxTotalPoints; ?> points.</h3>
